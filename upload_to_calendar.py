@@ -38,23 +38,6 @@ with open('data/celestial-almanac.csv', 'r') as infile:
 try:
     service = build('calendar', 'v3', credentials=creds)
 
-    '''
-    page_token = None
-    while True:
-        events = service.events().list(calendarId=almanac_cal_id, pageToken=page_token).execute()
-        for event in events['items']:
-            print(event['summary'])
-            service.events().delete(
-                calendarId=almanac_cal_id,
-                eventId=event['id']
-            ).execute(num_retries=50)
-            time.sleep(0.5)
-        page_token = events.get('nextPageToken')
-        if not page_token:
-            break 
-
-    '''
-
     for ev in data:
         title = ev.get('event_type')
         start_datetime = datetime.fromisoformat(ev.get('datetime'))
@@ -70,7 +53,7 @@ try:
             if 'lunar eclipse' in title:
                 end_dt = start_datetime + timedelta(minutes=60)
 
-            # solar eclipse data has duration values
+            # solar eclipse data usually has duration values
             if 'solar eclipse' in title:
                 seconds = ev.get('duration_seconds') or 0
                 minutes = ev.get('duration_minutes') or 0
